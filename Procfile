@@ -1,1 +1,1 @@
-web: gunicorn khaya_ledger.wsgi --log-file -
+web: gunicorn Home_Finance.wsgi --log-file -
