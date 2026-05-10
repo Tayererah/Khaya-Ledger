@@ -1,0 +1,12 @@
+from django import forms
+from .models import Budget
+
+
+class BudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = ['category', 'amount', 'month', 'year']
+        widgets = {
+            'month': forms.NumberInput(attrs={'min': 1, 'max': 12}),
+            'year': forms.NumberInput(attrs={'min': 2024, 'max': 2030}),
+        }

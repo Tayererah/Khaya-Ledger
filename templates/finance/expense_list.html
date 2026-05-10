@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block title %}Expenses{% endblock %}
+{% block content %}
+
+<div style="display:flex; justify-content:space-between;
+            align-items:center; margin-bottom:20px;">
+    <div>
+        <h1 style="color:white; font-size:24px;
+                   font-weight:bold; margin:0;">
+            💸 Expenses
+        </h1>
+        <p style="color:#555; font-size:14px; margin:4px 0 0;">
+            All household expenses
+        </p>
+    </div>
+    <a href="/expenses/add/" class="btn-submit">+ Add Expense</a>
+</div>
+
+<!-- Search & Filter Bar -->
+<div style="background:#12121f; border-radius:16px; padding:20px;
+            border:1px solid #2a2a3e; margin-bottom:20px;">
+    <form method="GET">
+        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:12px; align-items:end;">
+
+            <div>
+                <label style="color:#555; font-size:11px; text-transform:uppercase;
+                               letter-spacing:1px; display:block; margin-bottom:6px;">
+                    Search
+                </label>
+                <input type="text" name="search" value="{{ search }}"
+                    placeholder="Search expenses..."
+                    style="width:100%; padding:10px 15px; background:#1a1a2e;
+                           border:1.5px solid #2a2a3e; border-radius:10px;
+                           color:white; font-size:13px; outline:none;">
+            </div>
+
+            <div>
+                <label style="color:#555; font-size:11px; text-transform:uppercase;
+                               letter-spacing:1px; display:block; margin-bottom:6px;">
+                    Category
+                </label>
+                <select name="category"
+                    style="width:100%; padding:10px 15px; background:#1a1a2e;
+                           border:1.5px solid #2a2a3e; border-radius:10px;
+                           color:white; font-size:13px; outline:none; appearance:none;">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.pk }}"
+                        {% if category == cat.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label style="color:#555; font-size:11px; text-transform:uppercase;
+                               letter-spacing:1px; display:block; margin-bottom:6px;">
+                    From Date
+                </label>
+                <input type="date" name="date_from" value="{{ date_from }}"
+                    style="width:100%; padding:10px 15px; background:#1a1a2e;
+                           border:1.5px solid #2a2a3e; border-radius:10px;
+                           color:white; font-size:13px; outline:none;">
+            </div>
+
+            <div>
+                <label style="color:#555; font-size:11px; text-transform:uppercase;
+                               letter-spacing:1px; display:block; margin-bottom:6px;">
+                    To Date
+                </label>
+                <input type="date" name="date_to" value="{{ date_to }}"
+                    style="width:100%; padding:10px 15px; background:#1a1a2e;
+                           border:1.5px solid #2a2a3e; border-radius:10px;
+                           color:white; font-size:13px; outline:none;">
+            </div>
+
+            <div style="display:flex; gap:8px;">
+                <button type="submit"
+                    style="padding:10px 20px; background:#f39c12;
+                           color:#1a1a2e; border:none; border-radius:10px;
+                           font-weight:bold; cursor:pointer; font-size:13px;">
+                    🔍 Filter
+                </button>
+                <a href="/expenses/"
+                    style="padding:10px 15px; background:#2a2a3e;
+                           color:#aaa; border-radius:10px; text-decoration:none;
+                           font-size:13px; display:inline-block;">
+                    ✕
+                </a>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<!-- Results Count -->
+<div style="color:#555; font-size:13px; margin-bottom:12px;">
+    Showing {{ expenses.count }} expense{{ expenses.count|pluralize }}
+    {% if search or category or date_from or date_to %}
+    — <a href="/expenses/" style="color:#f39c12;">Clear filters</a>
+    {% endif %}
+</div>
+
+<!-- Expenses Table -->
+<div class="page-card">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td style="color:white;">{{ expense.description }}</td>
+                <td>
+                    <span style="background:#3a1a1a; color:#e74c3c;
+                          padding:3px 10px; border-radius:20px; font-size:11px;">
+                        {{ expense.category.name }}
+                    </span>
+                </td>
+                <td style="color:#e74c3c; font-weight:bold;">
+                    -${{ expense.amount }}
+                </td>
+                <td style="color:#555;">{{ expense.date }}</td>
+                <td>
+                    <a href="/expenses/{{ expense.pk }}/edit/"
+                       style="color:#f39c12; font-size:12px;
+                              text-decoration:none; margin-right:10px;">
+                        ✏️ Edit
+                    </a>
+                    <a href="/expenses/{{ expense.pk }}/delete/"
+                       style="color:#e74c3c; font-size:12px; text-decoration:none;">
+                        🗑️ Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align:center; color:#555; padding:30px;">
+                    {% if search or category or date_from or date_to %}
+                        No expenses match your filters —
+                        <a href="/expenses/" style="color:#f39c12;">clear filters</a>
+                    {% else %}
+                        No expenses yet —
+                        <a href="/expenses/add/" style="color:#f39c12;">
+                            add your first one
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

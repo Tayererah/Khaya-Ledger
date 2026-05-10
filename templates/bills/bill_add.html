@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Add{% endif %} Bill{% endblock %}
+{% block content %}
+
+<div class="form-page-wrapper">
+    <div class="form-page-header">
+        <h1>{% if edit %}✏️ Edit Bill{% else %}🧾 Add Bill{% endif %}</h1>
+        <p>{% if edit %}Update the bill details below
+           {% else %}Add a recurring household bill{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Bill Name</label>
+            <input type="text" name="name"
+                placeholder="e.g. Electricity, Rent, Netflix"
+                value="{{ form.name.value|default:'' }}">
+            {{ form.name.errors }}
+
+            <div class="form-row-2">
+                <div>
+                    <label>Amount</label>
+                    <input type="number" name="amount" step="0.01"
+                        placeholder="0.00"
+                        value="{{ form.amount.value|default:'' }}">
+                    {{ form.amount.errors }}
+                </div>
+                <div>
+                    <label>Due Day of Month</label>
+                    <input type="number" name="due_day"
+                        placeholder="e.g. 25" min="1" max="31"
+                        value="{{ form.due_day.value|default:'' }}">
+                    {{ form.due_day.errors }}
+                </div>
+            </div>
+
+            <label>Category</label>
+            <select name="category">
+                <option value="">— Select a category —</option>
+                {% for cat in form.category.field.queryset %}
+                <option value="{{ cat.pk }}"
+                    {% if form.category.value == cat.pk %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    {% if edit %}Save Changes{% else %}Add Bill{% endif %}
+                </button>
+                <a href="/bills/" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

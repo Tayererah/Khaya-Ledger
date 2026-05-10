@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Add{% endif %} Expense{% endblock %}
+{% block content %}
+
+<div class="form-page-wrapper">
+    <div class="form-page-header">
+        <h1>
+            {% if edit %}✏️ Edit Expense{% else %}💸 Add Expense{% endif %}
+        </h1>
+        <p>
+            {% if edit %}Update the expense details below
+            {% else %}Record a new household expense{% endif %}
+        </p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label>Description</label>
+            <input type="text" name="description"
+                placeholder="e.g. Weekly groceries"
+                value="{{ form.description.value|default:'' }}">
+            {{ form.description.errors }}
+
+            <div class="form-row-2">
+                <div>
+                    <label>Amount</label>
+                    <input type="number" name="amount" step="0.01"
+                        placeholder="0.00"
+                        value="{{ form.amount.value|default:'' }}">
+                    {{ form.amount.errors }}
+                </div>
+                <div>
+                    <label>Date</label>
+                    <input type="date" name="date"
+                        value="{{ form.date.value|default:'' }}">
+                    {{ form.date.errors }}
+                </div>
+            </div>
+
+            <label>Category</label>
+            <select name="category">
+                <option value="">— Select a category —</option>
+                {% for cat in form.category.field.queryset %}
+                <option value="{{ cat.pk }}"
+                    {% if form.category.value == cat.pk %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+
+            <label>Notes (optional)</label>
+            <textarea name="notes"
+                placeholder="Any additional details...">{{ form.notes.value|default:'' }}</textarea>
+            {{ form.notes.errors }}
+
+            <label>Receipt Image (optional)</label>
+            <input type="file" name="receipt_image" accept="image/*">
+            {{ form.receipt_image.errors }}
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    {% if edit %}Save Changes{% else %}Add Expense{% endif %}
+                </button>
+                <a href="/expenses/" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

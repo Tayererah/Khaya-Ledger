@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Add{% endif %} Income{% endblock %}
+{% block content %}
+
+<div class="form-page-wrapper">
+    <div class="form-page-header">
+        <h1>{% if edit %}✏️ Edit Income{% else %}💰 Add Income{% endif %}</h1>
+        <p>{% if edit %}Update the income details below
+           {% else %}Record a new income entry{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Source</label>
+            <input type="text" name="source"
+                placeholder="e.g. Monthly Salary"
+                value="{{ form.source.value|default:'' }}">
+            {{ form.source.errors }}
+
+            <div class="form-row-2">
+                <div>
+                    <label>Amount</label>
+                    <input type="number" name="amount" step="0.01"
+                        placeholder="0.00"
+                        value="{{ form.amount.value|default:'' }}">
+                    {{ form.amount.errors }}
+                </div>
+                <div>
+                    <label>Date</label>
+                    <input type="date" name="date"
+                        value="{{ form.date.value|default:'' }}">
+                    {{ form.date.errors }}
+                </div>
+            </div>
+
+            <label>Category</label>
+            <select name="category">
+                <option value="">— Select a category —</option>
+                {% for cat in form.category.field.queryset %}
+                <option value="{{ cat.pk }}"
+                    {% if form.category.value == cat.pk %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+
+            <div class="checkbox-row">
+                <input type="checkbox" name="is_recurring" id="is_recurring"
+                    {% if form.is_recurring.value %}checked{% endif %}>
+                <label for="is_recurring">This is a recurring income</label>
+            </div>
+
+            <label>Notes (optional)</label>
+            <textarea name="notes"
+                placeholder="Any additional details...">{{ form.notes.value|default:'' }}</textarea>
+            {{ form.notes.errors }}
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    {% if edit %}Save Changes{% else %}Add Income{% endif %}
+                </button>
+                <a href="/income/" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

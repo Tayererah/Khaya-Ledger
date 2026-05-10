@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: white !important;
+        margin: 0;
+        padding: 0;
+    }
+   
+    .login-wrapper {
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
+        max-width: 100%;
+    }
+
+    /* Left Side — Form */
+    .login-left {
+        width: 45%;
+        padding: 60px 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white;
+    }
+    .login-left .brand {
+        color: #27ae60;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 50px;
+    }
+    .login-left h2 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1a1a2e;
+        margin-bottom: 5px;
+    }
+    .login-left p.subtitle {
+        color: #999;
+        font-size: 14px;
+        margin-bottom: 35px;
+    }
+    .login-left label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .login-left input[type="text"],
+    .login-left input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1.5px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        outline: none;
+        transition: border 0.2s;
+    }
+    .login-left input:focus {
+        border-color: #27ae60;
+    }
+    .login-extras {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        font-size: 13px;
+    }
+    .login-extras a {
+        color: #27ae60;
+        text-decoration: none;
+    }
+    .btn-login {
+        width: 100%;
+        padding: 13px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 12px;
+    }
+    .btn-login:hover {
+        background: #219a52;
+    }
+    .login-footer {
+        margin-top: 40px;
+        font-size: 12px;
+        color: #bbb;
+    }
+    .login-footer a {
+        color: #bbb;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+    .register-link {
+        text-align: center;
+        font-size: 13px;
+        color: #999;
+        margin-top: 15px;
+    }
+    .register-link a {
+        color: #27ae60;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    /* Right Side — Visual Panel */
+    .login-right {
+        width: 55%;
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 0 20px 20px 0;
+    }
+    .login-right .topnav {
+        position: absolute;
+        top: 25px;
+        right: 30px;
+        display: flex;
+        gap: 25px;
+        align-items: center;
+    }
+    .login-right .topnav a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    .login-right .topnav .btn-started {
+        border: 2px solid white;
+        padding: 7px 18px;
+        border-radius: 20px;
+        color: white;
+        font-size: 13px;
+        text-decoration: none;
+    }
+    .login-right .visual-content {
+        text-align: center;
+        color: white;
+        padding: 40px;
+    }
+    .login-right .visual-content h1 {
+        font-size: 48px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+    }
+    .login-right .visual-content p {
+        font-size: 14px;
+        opacity: 0.8;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+    .circle-bg {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+    }
+    .circle-1 { width: 300px; height: 300px; top: -80px; right: -80px; }
+    .circle-2 { width: 200px; height: 200px; bottom: -50px; left: -50px; }
+    .circle-3 { width: 150px; height: 150px; bottom: 100px; right: 50px; }
+    .dots {
+        position: absolute;
+        bottom: 25px;
+        display: flex;
+        gap: 8px;
+    }
+    .dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.4);
+    }
+    .dot.active { background: white; width: 20px; border-radius: 4px; }
+    .errorlist {
+        color: #e74c3c;
+        font-size: 13px;
+        list-style: none;
+        padding: 0;
+        margin: -15px 0 10px;
+    }
+
+    
+</style>
+
+<div class="login-wrapper">
+
+    <!-- Left — Form -->
+    <div class="login-left">
+        <div class="brand">🏠 KhayaLedger</div>
+
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to manage your home finances</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <label>Username</label>
+            <input
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                value="{{ form.username.value|default:'' }}"
+            >
+            {{ form.username.errors }}
+
+            <label>Password</label>
+            <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+            >
+            {{ form.password.errors }}
+
+            <div class="login-extras">
+                <label style="margin:0; font-weight:normal; cursor:pointer;">
+                    <input type="checkbox"> Remember me
+                </label>
+                <a href="#">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Log in</button>
+        </form>
+
+        <div class="register-link">
+            No account yet?
+            <a href="/accounts/register/">Register here</a>
+        </div>
+
+        <div class="login-footer">
+            <a href="#">Terms & Conditions</a> •
+            <a href="#">Privacy Policy</a>
+        </div>
+    </div>
+
+    <!-- Right — Visual -->
+    <div class="login-right">
+        <div class="circle-bg circle-1"></div>
+        <div class="circle-bg circle-2"></div>
+        <div class="circle-bg circle-3"></div>
+
+        <div class="topnav">
+            <a href="#">Features</a>
+            <a href="#">About</a>
+            <a href="#">Help</a>
+            <a href="/accounts/register/" class="btn-started">Get Started</a>
+        </div>
+
+        <div class="visual-content">
+            <h1>KHAYA</h1>
+            <p>Home Finance System</p>
+            <br><br>
+            <div style="font-size: 80px;">🏠</div>
+            <br>
+            <p style="font-size:16px; opacity:0.9; letter-spacing:1px;">
+                Track • Budget • Save
+            </p>
+        </div>
+
+        <div class="dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

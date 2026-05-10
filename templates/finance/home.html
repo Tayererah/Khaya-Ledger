@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: #0a0a15 !important;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    .no-sidebar-content {
+        background: #0a0a15 !important;
+    }
+
+    /* ── Navbar ── */
+    .landing-nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 60px;
+        background: rgba(10,10,21,0.8);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .landing-nav .brand {
+        color: #f39c12;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .landing-nav .nav-links a {
+        color: #777;
+        text-decoration: none;
+        margin-left: 30px;
+        font-size: 14px;
+        transition: color 0.2s;
+    }
+    .landing-nav .nav-links a:hover { color: white; }
+    .landing-nav .nav-btn {
+        padding: 10px 24px;
+        background: #f39c12;
+        color: #0a0a15;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 20px;
+        transition: background 0.2s;
+    }
+    .landing-nav .nav-btn:hover { background: #e67e22; }
+
+    /* ── Hero ── */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-content {
+        text-align: center;
+        z-index: 10;
+        position: relative;
+    }
+    .hero-badge {
+        display: inline-block;
+        padding: 6px 18px;
+        background: rgba(243,156,18,0.15);
+        border: 1px solid rgba(243,156,18,0.3);
+        border-radius: 25px;
+        color: #f39c12;
+        font-size: 13px;
+        margin-bottom: 25px;
+        letter-spacing: 1px;
+    }
+    .hero h1 {
+        font-size: 72px;
+        font-weight: 900;
+        color: white;
+        margin: 0 0 10px;
+        line-height: 1.1;
+        letter-spacing: -2px;
+    }
+    .hero h1 span { color: #f39c12; }
+    .hero p {
+        color: #555;
+        font-size: 18px;
+        margin: 20px auto 40px;
+        max-width: 500px;
+        line-height: 1.7;
+    }
+    .hero-btns {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+    .btn-primary-hero {
+        padding: 15px 35px;
+        background: #f39c12;
+        color: #0a0a15;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 15px;
+        transition: all 0.2s;
+        box-shadow: 0 0 30px rgba(243,156,18,0.3);
+    }
+    .btn-primary-hero:hover {
+        background: #e67e22;
+        transform: translateY(-2px);
+        box-shadow: 0 0 40px rgba(243,156,18,0.5);
+    }
+    .btn-secondary-hero {
+        padding: 15px 35px;
+        background: transparent;
+        color: white;
+        border-radius: 30px;
+        text-decoration: none;
+        font-size: 15px;
+        border: 1px solid #2a2a3e;
+        transition: all 0.2s;
+    }
+    .btn-secondary-hero:hover {
+        border-color: #f39c12;
+        color: #f39c12;
+    }
+
+    /* ── Canvas ── */
+    #canvas3d {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
+    /* ── Features ── */
+    .features {
+        position: relative;
+        z-index: 10;
+        padding: 100px 60px;
+        background: linear-gradient(to bottom, transparent, #0d0d1a);
+    }
+    .features-title {
+        text-align: center;
+        color: white;
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .features-sub {
+        text-align: center;
+        color: #555;
+        font-size: 15px;
+        margin-bottom: 60px;
+    }
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .feature-card {
+        background: #12121f;
+        border: 1px solid #2a2a3e;
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    .feature-card:hover {
+        border-color: #f39c12;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(243,156,18,0.1);
+    }
+    .feature-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+    .feature-card h3 {
+        color: white;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .feature-card p {
+        color: #555;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* ── Stats ── */
+    .stats {
+        position: relative;
+        z-index: 10;
+        padding: 60px;
+        background: #0d0d1a;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .stat-num {
+        color: #f39c12;
+        font-size: 48px;
+        font-weight: bold;
+    }
+    .stat-label {
+        color: #555;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    /* ── Footer ── */
+    .landing-footer {
+        position: relative;
+        z-index: 10;
+        padding: 30px 60px;
+        background: #0d0d1a;
+        border-top: 1px solid #1a1a2e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .landing-footer p { color: #333; font-size: 13px; }
+    .landing-footer a { color: #333; text-decoration: none; margin-left: 20px; font-size: 13px; }
+
+    /* ── Floating Particles ── */
+    .particle {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 2;
+        animation: float-particle linear infinite;
+        opacity: 0;
+    }
+    @keyframes float-particle {
+        0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+    }
+</style>
+
+<!-- Canvas for 3D -->
+<canvas id="canvas3d"></canvas>
+
+<!-- Navbar -->
+<nav class="landing-nav" id="landingNav">
+    <div class="brand">🏠 KhayaLedger</div>
+    <div class="nav-links" id="landingNavLinks">
+        <a href="#features">Features</a>
+        <a href="#stats">About</a>
+        <a href="/accounts/login/">Login</a>
+        <a href="/accounts/register/" class="nav-btn">Get Started</a>
+    </div>
+    <!-- Mobile Menu Button -->
+    <div onclick="toggleLandingNav()"
+         style="display:none; cursor:pointer; padding:5px;"
+         id="landingMenuBtn">
+        <div style="width:22px; height:2px; background:#f39c12; margin:5px 0;"></div>
+        <div style="width:22px; height:2px; background:#f39c12; margin:5px 0;"></div>
+        <div style="width:22px; height:2px; background:#f39c12; margin:5px 0;"></div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">✨ Smart Home Finance</div>
+        <h1>Take Control of<br>Your <span>Finances</span></h1>
+        <p>KhayaLedger helps African households track spending, manage budgets, and reach savings goals — all in one place.</p>
+        <div class="hero-btns">
+            <a href="/accounts/register/" class="btn-primary-hero">
+                Get Started Free
+            </a>
+            <a href="/accounts/login/" class="btn-secondary-hero">
+                Sign In
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <div class="features-title">Everything You Need</div>
+    <div class="features-sub">Powerful tools for every household</div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">💸</div>
+            <h3>Expense Tracking</h3>
+            <p>Log every expense in seconds and see exactly where your money goes each month.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Smart Budgets</h3>
+            <p>Set monthly budgets per category and get alerted before you overspend.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Savings Goals</h3>
+            <p>Set savings targets and track your progress automatically every month.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🧾</div>
+            <h3>Bill Tracking</h3>
+            <p>Never miss a payment — track all recurring bills and due dates.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📈</div>
+            <h3>Reports & Insights</h3>
+            <p>Beautiful charts showing your financial trends over time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>AI Advisor</h3>
+            <p>Get personalised financial advice powered by Claude AI — your 24/7 money coach.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="stats" id="stats">
+    <div class="stats-grid">
+        <div>
+            <div class="stat-num">100%</div>
+            <div class="stat-label">Free to use</div>
+        </div>
+        <div>
+            <div class="stat-num">6+</div>
+            <div class="stat-label">Powerful features</div>
+        </div>
+        <div>
+            <div class="stat-num">🏠</div>
+            <div class="stat-label">Built for Zim households</div>
+            
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="landing-footer"> 
+    <p>© 2026 TayeSystems</p>
+    <div>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="/accounts/login/">Login</a>
+    </div>
+</footer>
+
+<!-- 3D Animation Script -->
+<script>
+const canvas = document.getElementById('canvas3d');
+const ctx    = canvas.getContext('2d');
+
+canvas.width  = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+// ── 3D Rotating Cube Geometry ──
+class Vec3 {
+    constructor(x, y, z) { this.x = x; this.y = y; this.z = z; }
+}
+
+function rotateX(v, a) {
+    return new Vec3(
+        v.x,
+        v.y * Math.cos(a) - v.z * Math.sin(a),
+        v.y * Math.sin(a) + v.z * Math.cos(a)
+    );
+}
+function rotateY(v, a) {
+    return new Vec3(
+        v.x * Math.cos(a) + v.z * Math.sin(a),
+        v.y,
+        -v.x * Math.sin(a) + v.z * Math.cos(a)
+    );
+}
+function rotateZ(v, a) {
+    return new Vec3(
+        v.x * Math.cos(a) - v.y * Math.sin(a),
+        v.x * Math.sin(a) + v.y * Math.cos(a),
+        v.z
+    );
+}
+function project(v, fov, cx, cy) {
+    const z = v.z + fov;
+    const scale = fov / z;
+    return { x: cx + v.x * scale, y: cy + v.y * scale, scale };
+}
+
+// ── Floating Cubes ──
+class Cube {
+    constructor(x, y, size, speed, opacity) {
+        this.x       = x;
+        this.y       = y;
+        this.size    = size;
+        this.speed   = speed;
+        this.opacity = opacity;
+        this.rotX    = Math.random() * Math.PI * 2;
+        this.rotY    = Math.random() * Math.PI * 2;
+        this.rotZ    = Math.random() * Math.PI * 2;
+        this.dRotX   = (Math.random() - 0.5) * 0.01;
+        this.dRotY   = (Math.random() - 0.5) * 0.01;
+        this.dRotZ   = (Math.random() - 0.5) * 0.01;
+        this.vy      = -speed;
+        this.vx      = (Math.random() - 0.5) * 0.3;
+        this.color   = Math.random() > 0.5 ? '#f39c12' : '#3498db';
+    }
+
+    getVertices() {
+        const s = this.size;
+        let verts = [
+            new Vec3(-s,-s,-s), new Vec3( s,-s,-s),
+            new Vec3( s, s,-s), new Vec3(-s, s,-s),
+            new Vec3(-s,-s, s), new Vec3( s,-s, s),
+            new Vec3( s, s, s), new Vec3(-s, s, s),
+        ];
+        return verts.map(v => {
+            v = rotateX(v, this.rotX);
+            v = rotateY(v, this.rotY);
+            v = rotateZ(v, this.rotZ);
+            return v;
+        });
+    }
+
+    draw(ctx, cx, cy) {
+        const fov   = 300;
+        const verts = this.getVertices();
+        const proj  = verts.map(v => {
+            const pv = new Vec3(v.x + this.x - cx, v.y + this.y - cy, v.z);
+            return project(pv, fov, cx, cy);
+        });
+
+        const edges = [
+            [0,1],[1,2],[2,3],[3,0],
+            [4,5],[5,6],[6,7],[7,4],
+            [0,4],[1,5],[2,6],[3,7]
+        ];
+
+        ctx.strokeStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.lineWidth   = 1;
+
+        edges.forEach(([a, b]) => {
+            ctx.beginPath();
+            ctx.moveTo(proj[a].x, proj[a].y);
+            ctx.lineTo(proj[b].x, proj[b].y);
+            ctx.stroke();
+        });
+
+        ctx.globalAlpha = 1;
+    }
+
+    update() {
+        this.x    += this.vx;
+        this.y    += this.vy;
+        this.rotX += this.dRotX;
+        this.rotY += this.dRotY;
+        this.rotZ += this.dRotZ;
+    }
+
+    isOffScreen() {
+        return this.y < -200 || this.x < -200 || this.x > window.innerWidth + 200;
+    }
+}
+
+// ── Stars / Particles ──
+class Star {
+    constructor() { this.reset(); }
+    reset() {
+        this.x    = Math.random() * window.innerWidth;
+        this.y    = Math.random() * window.innerHeight;
+        this.r    = Math.random() * 1.5;
+        this.a    = Math.random();
+        this.da   = (Math.random() - 0.5) * 0.005;
+    }
+    draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${this.a})`;
+        ctx.fill();
+    }
+    update() {
+        this.a += this.da;
+        if (this.a <= 0 || this.a >= 1) this.da *= -1;
+    }
+}
+
+// ── Grid Lines ──
+function drawGrid(ctx) {
+    const W = canvas.width;
+    const H = canvas.height;
+    const spacing = 60;
+
+    ctx.strokeStyle = 'rgba(243,156,18,0.04)';
+    ctx.lineWidth   = 1;
+
+    for (let x = 0; x < W; x += spacing) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, H);
+        ctx.stroke();
+    }
+    for (let y = 0; y < H; y += spacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(W, y);
+        ctx.stroke();
+    }
+}
+
+// ── Glowing Orbs ──
+class Orb {
+    constructor(x, y, r, color) {
+        this.x     = x;
+        this.y     = y;
+        this.r     = r;
+        this.color = color;
+        this.phase = Math.random() * Math.PI * 2;
+    }
+    draw(ctx) {
+        const pulse = Math.sin(Date.now() * 0.001 + this.phase) * 0.3 + 0.7;
+        const grad  = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.r * pulse
+        );
+        grad.addColorStop(0, this.color + '33');
+        grad.addColorStop(1, this.color + '00');
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+    }
+}
+
+// ── Setup ──
+let cubes = [];
+let stars = Array.from({ length: 150 }, () => new Star());
+let orbs  = [
+    new Orb(window.innerWidth * 0.2,  window.innerHeight * 0.3, 300, '#f39c12'),
+    new Orb(window.innerWidth * 0.8,  window.innerHeight * 0.7, 250, '#3498db'),
+    new Orb(window.innerWidth * 0.5,  window.innerHeight * 0.5, 200, '#9b59b6'),
+];
+
+function spawnCube() {
+    cubes.push(new Cube(
+        Math.random() * window.innerWidth,
+        window.innerHeight + 100,
+        10 + Math.random() * 30,
+        0.3 + Math.random() * 0.8,
+        0.1 + Math.random() * 0.4
+    ));
+}
+
+// Spawn cubes
+for (let i = 0; i < 15; i++) {
+    const c = new Cube(
+        Math.random() * window.innerWidth,
+        Math.random() * window.innerHeight,
+        10 + Math.random() * 30,
+        0.3 + Math.random() * 0.8,
+        0.1 + Math.random() * 0.4
+    );
+    cubes.push(c);
+}
+
+setInterval(spawnCube, 2000);
+
+// ── Mouse Interaction ──
+let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+// ── Animation Loop ──
+function animate() {
+    requestAnimationFrame(animate);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Background
+    ctx.fillStyle = '#0a0a15';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid
+    drawGrid(ctx);
+
+    // Orbs
+    orbs.forEach(o => o.draw(ctx));
+
+    // Mouse glow
+    const mg = ctx.createRadialGradient(
+        mouse.x, mouse.y, 0,
+        mouse.x, mouse.y, 150
+    );
+    mg.addColorStop(0, 'rgba(243,156,18,0.06)');
+    mg.addColorStop(1, 'rgba(243,156,18,0)');
+    ctx.beginPath();
+    ctx.arc(mouse.x, mouse.y, 150, 0, Math.PI * 2);
+    ctx.fillStyle = mg;
+    ctx.fill();
+
+    // Stars
+    stars.forEach(s => { s.update(); s.draw(ctx); });
+
+    // Cubes
+    const cx = canvas.width  / 2;
+    const cy = canvas.height / 2;
+    cubes = cubes.filter(c => !c.isOffScreen());
+    cubes.forEach(c => { c.update(); c.draw(ctx, cx, cy); });
+}
+
+animate();
+
+// Mobile nav toggle
+    function toggleLandingNav() {
+        const links = document.getElementById('landingNavLinks');
+        links.classList.toggle('open');
+    }
+
+    // Show mobile menu button on small screens
+    function checkMobile() {
+        const btn = document.getElementById('landingMenuBtn');
+        if (window.innerWidth <= 768) {
+            btn.style.display = 'block';
+        } else {
+            btn.style.display = 'none';
+            document.getElementById('landingNavLinks').classList.remove('open');
+        }
+    }
+    window.addEventListener('resize', checkMobile);
+    checkMobile();
+</script>
+
+{% endblock %}

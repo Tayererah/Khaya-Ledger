@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<style>
+    body {
+        background: #1a1a2e !important;
+        margin: 0;
+        padding: 0;
+    }
+    .register-wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Left Side — Visual */
+    .register-left {
+        width: 45%;
+        background: #12121f;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    .register-left .brand {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+        color: #f39c12;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .register-left .visual-text {
+        text-align: center;
+        color: white;
+        z-index: 2;
+    }
+    .register-left .visual-text h2 {
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .register-left .visual-text p {
+        color: #aaa;
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 280px;
+    }
+    .register-left .icon-big {
+        font-size: 100px;
+        margin-bottom: 30px;
+    }
+    .yellow-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(243, 156, 18, 0.1);
+    }
+    .yc1 { width: 300px; height: 300px; top: -100px; right: -100px; }
+    .yc2 { width: 200px; height: 200px; bottom: -60px; left: -60px; }
+    .yc3 { width: 100px; height: 100px; bottom: 150px; right: 80px; }
+    .steps {
+        display: flex;
+        gap: 8px;
+        margin-top: 40px;
+    }
+    .step-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #444;
+    }
+    .step-dot.active {
+        background: #f39c12;
+        width: 24px;
+        border-radius: 4px;
+    }
+
+    /* Right Side — Form */
+    .register-right {
+        width: 55%;
+        background: #1a1a2e;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 50px 60px;
+        overflow-y: auto;
+    }
+    .register-right h2 {
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .register-right .subtitle {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+    .register-right label {
+        color: #aaa;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+        display: block;
+    }
+    .register-right input[type="text"],
+    .register-right input[type="email"],
+    .register-right input[type="password"] {
+        width: 100%;
+        padding: 13px 15px;
+        background: #12121f;
+        border: 1.5px solid #333;
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        margin-bottom: 18px;
+        outline: none;
+        transition: border 0.2s;
+    }
+    .register-right input:focus {
+        border-color: #f39c12;
+    }
+    .register-right input::placeholder {
+        color: #555;
+    }
+    .btn-register {
+        width: 100%;
+        padding: 14px;
+        background: #f39c12;
+        color: #1a1a2e;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+    .btn-register:hover {
+        background: #e67e22;
+    }
+    .login-link {
+        text-align: center;
+        color: #666;
+        font-size: 13px;
+    }
+    .login-link a {
+        color: #f39c12;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    .errorlist {
+        color: #e74c3c;
+        font-size: 12px;
+        list-style: none;
+        padding: 0;
+        margin: -14px 0 10px;
+    }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    .register-right .footer-links {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 12px;
+        color: #444;
+    }
+    .register-right .footer-links a {
+        color: #444;
+        text-decoration: none;
+        margin: 0 8px;
+    }
+</style>
+
+<div class="register-wrapper">
+
+    <!-- Left — Visual -->
+    <div class="register-left">
+        <div class="brand">🏠 KhayaLedger</div>
+        <div class="yellow-circle yc1"></div>
+        <div class="yellow-circle yc2"></div>
+        <div class="yellow-circle yc3"></div>
+
+        <div class="visual-text">
+            <div class="icon-big">🏠</div>
+            <h2>Take Control<br>of Your <span style="color:#f39c12;">Finances</span></h2>
+            <p>
+                Join thousands of households managing
+                their money smarter every day with
+                KhayaLedger.
+            </p>
+        </div>
+
+        <div class="steps">
+            <div class="step-dot"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+        </div>
+    </div>
+
+    <!-- Right — Form -->
+    <div class="register-right">
+        <h2>Create New Account</h2>
+        <p class="subtitle">Fill in your details to get started</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Username</label>
+            <input
+                type="text"
+                name="username"
+                placeholder="Choose a username"
+                value="{{ form.username.value|default:'' }}"
+            >
+            {{ form.username.errors }}
+
+            <label>Email Address</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value="{{ form.email.value|default:'' }}"
+            >
+            {{ form.email.errors }}
+
+            <label>Household Name</label>
+            <input
+                type="text"
+                name="household_name"
+                placeholder="e.g. The Mokoena Family"
+                value="{{ form.household_name.value|default:'' }}"
+            >
+            {{ form.household_name.errors }}
+
+            <div class="form-row">
+                <div>
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="password1"
+                        placeholder="Create password"
+                    >
+                    {{ form.password1.errors }}
+                </div>
+                <div>
+                    <label>Confirm Password</label>
+                    <input
+                        type="password"
+                        name="password2"
+                        placeholder="Repeat password"
+                    >
+                    {{ form.password2.errors }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">
+                Create Account
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="/accounts/login/">Login here</a>
+        </div>
+
+        <div class="footer-links">
+            <a href="#">Terms & Conditions</a> •
+            <a href="#">Privacy Policy</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

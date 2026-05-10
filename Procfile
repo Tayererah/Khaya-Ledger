@@ -1,0 +1,1 @@
+web: gunicorn khaya_ledger.wsgi --log-file -

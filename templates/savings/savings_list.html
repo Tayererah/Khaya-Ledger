@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Savings{% endblock %}
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div>
+        <h1 style="color:white; font-size:24px; font-weight:bold; margin:0;">
+            🎯 Savings Goals
+        </h1>
+        <p style="color:#555; font-size:14px; margin:4px 0 0;">
+            Track your household savings
+        </p>
+    </div>
+    <a href="/savings/add/" class="btn-submit">+ Add Goal</a>
+</div>
+
+<div class="page-card">
+    <table class="dark-table">
+        <thead>
+            <tr>
+                <th>Goal</th>
+                <th>Target</th>
+                <th>Saved</th>
+                <th>Progress</th>
+                <th>Target Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for goal in goals %}
+            <tr>
+                <td style="color:white;">{{ goal.name }}</td>
+                <td style="color:#f39c12; font-weight:bold;">
+                    ${{ goal.target_amount }}
+                </td>
+                <td style="color:#27ae60; font-weight:bold;">
+                    ${{ goal.current_amount }}
+                </td>
+                <td style="min-width:120px;">
+                    <div style="background:#2a2a3e; border-radius:10px;
+                                height:6px; overflow:hidden;">
+                        <div style="background:#f39c12;
+                                    width:{{ goal.progress_percentage|floatformat:0 }}%;
+                                    height:6px; border-radius:10px; max-width:100%;">
+                        </div>
+                    </div>
+                    <span style="color:#777; font-size:11px;">
+                        {{ goal.progress_percentage|floatformat:1 }}%
+                    </span>
+                </td>
+                <td style="color:#555;">{{ goal.target_date }}</td>
+                <td>
+                    <a href="/savings/{{ goal.pk }}/edit/"
+                       style="color:#f39c12; font-size:12px;
+                              text-decoration:none; margin-right:10px;">
+                        ✏️ Edit
+                    </a>
+                    <a href="/savings/{{ goal.pk }}/delete/"
+                       style="color:#e74c3c; font-size:12px; text-decoration:none;">
+                        🗑️ Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align:center; color:#555; padding:30px;">
+                    No savings goals yet —
+                    <a href="/savings/add/" style="color:#f39c12;">
+                        add your first one
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

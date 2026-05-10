@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{% if edit %}Edit{% else %}Add{% endif %} Budget{% endblock %}
+{% block content %}
+
+<div class="form-page-wrapper">
+    <div class="form-page-header">
+        <h1>{% if edit %}✏️ Edit Budget{% else %}📊 Add Budget{% endif %}</h1>
+        <p>{% if edit %}Update the budget details below
+           {% else %}Set a spending limit for a category{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+
+            <label>Category</label>
+            <select name="category">
+                <option value="">— Select a category —</option>
+                {% for cat in form.category.field.queryset %}
+                <option value="{{ cat.pk }}"
+                    {% if form.category.value == cat.pk %}selected{% endif %}>
+                    {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+            {{ form.category.errors }}
+
+            <label>Budget Amount</label>
+            <input type="number" name="amount" step="0.01"
+                placeholder="0.00"
+                value="{{ form.amount.value|default:'' }}">
+            {{ form.amount.errors }}
+
+            <div class="form-row-2">
+                <div>
+                    <label>Month</label>
+                    <input type="number" name="month"
+                        placeholder="e.g. 5" min="1" max="12"
+                        value="{{ form.month.value|default:'' }}">
+                    {{ form.month.errors }}
+                </div>
+                <div>
+                    <label>Year</label>
+                    <input type="number" name="year"
+                        placeholder="e.g. 2026"
+                        value="{{ form.year.value|default:'' }}">
+                    {{ form.year.errors }}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    {% if edit %}Save Changes{% else %}Add Budget{% endif %}
+                </button>
+                <a href="/budgets/" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

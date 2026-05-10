@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+{% block content %}
+
+<div class="form-page-wrapper">
+    <div class="form-page-header">
+        <h1>🗑️ Confirm Delete</h1>
+        <p>This action cannot be undone</p>
+    </div>
+
+    <div class="form-card" style="text-align:center; padding:40px;">
+        <div style="font-size:60px; margin-bottom:20px;">⚠️</div>
+        <h3 style="color:white; margin-bottom:10px;">
+            Are you sure?
+        </h3>
+        <p style="color:#777; margin-bottom:30px;">
+            You are about to delete
+            <strong style="color:#e74c3c;">{{ item }}</strong>.
+            This cannot be undone.
+        </p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-actions" style="justify-content:center;">
+                <button type="submit" class="btn-submit"
+                    style="background:#e74c3c;">
+                    Yes, Delete
+                </button>
+                <a href="{{ cancel_url }}" class="btn-cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

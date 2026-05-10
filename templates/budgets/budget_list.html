@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Budgets{% endblock %}
+{% block content %}
+
+<div style="display:flex; justify-content:space-between;
+            align-items:center; margin-bottom:20px;">
+    <div>
+        <h1 style="color:white; font-size:24px;
+                   font-weight:bold; margin:0;">
+            📊 Budgets
+        </h1>
+        <p style="color:#555; font-size:14px; margin:4px 0 0;">
+            Monthly spending limits vs actual
+        </p>
+    </div>
+    <a href="/budgets/add/" class="btn-submit">+ Add Budget</a>
+</div>
+
+{% for item in budget_data %}
+<div style="background:#12121f; border-radius:16px; padding:25px;
+            border:1px solid #2a2a3e; margin-bottom:16px;">
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; margin-bottom:15px;">
+        <div>
+            <span style="color:white; font-size:16px; font-weight:bold;">
+                {{ item.budget.category.name }}
+            </span>
+            <span style="color:#555; font-size:12px; margin-left:10px;">
+                {{ item.budget.month }}/{{ item.budget.year }}
+            </span>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <span style="color:{{ item.status_color }};
+                         font-size:13px; font-weight:bold;">
+                ${{ item.spent }} / ${{ item.budget.amount }}
+            </span>
+            <a href="/budgets/{{ item.budget.pk }}/edit/"
+               style="color:#f39c12; font-size:12px; text-decoration:none;">
+                ✏️
+            </a>
+            <a href="/budgets/{{ item.budget.pk }}/delete/"
+               style="color:#e74c3c; font-size:12px; text-decoration:none;">
+                🗑️
+            </a>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div style="background:#2a2a3e; border-radius:10px;
+                height:10px; overflow:hidden; margin-bottom:10px;">
+        <div style="background:{{ item.status_color }};
+                    width:{% if item.percentage > 100 %}100{% else %}{{ item.percentage|floatformat:0 }}{% endif %}%;
+                    height:10px; border-radius:10px;
+                    transition: width 0.5s;">
+        </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between;">
+        <span style="color:#555; font-size:12px;">
+            {{ item.percentage|floatformat:1 }}% used
+        </span>
+        <span style="color:{{ item.status_color }}; font-size:12px;">
+            {% if item.remaining >= 0 %}
+                ${{ item.remaining }} remaining
+            {% else %}
+                ${{ item.remaining|stringformat:".2f" }} over budget ⚠️
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% empty %}
+<div style="background:#12121f; border-radius:16px; padding:60px;
+            border:1px solid #2a2a3e; text-align:center;">
+    <div style="font-size:50px; margin-bottom:15px;">📊</div>
+    <p style="color:#555;">No budgets yet —
+        <a href="/budgets/add/" style="color:#f39c12;">
+            add your first one
+        </a>
+    </p>
+</div>
+{% endfor %}
+
+{% endblock %}
